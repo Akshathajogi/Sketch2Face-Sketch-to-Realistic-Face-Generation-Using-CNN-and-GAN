@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Signup | Sketch2Face</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    color: #0f172a;
+}
+
+/* Back Button */
+.back-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #4f46e5;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+
+/* Card */
+.card {
+    width: 520px;
+    padding: 36px;
+    border-radius: 20px;
+    background: white;
+    border: 2px solid #b9c6fa;
+    box-shadow: 0 8px 20px #b9c6fa;
+}
+
+/* Heading */
+h2 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 28px;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: 1px solid #bed0f2;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #8c8ef7;
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.15);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #6366f1;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4f46e5;
+}
+</style>
+</head>
+
+<body>
+
+<a href="/" class="back-btn">← Back</a>
+
+<div class="card">
+    <h2>Create Account</h2>
+    <p class="subtitle">Start using Sketch2Face AI</p>
+
+    {% if error %}
+        <p style="color:#ef4444; text-align:center">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <input name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button>Create Account</button>
+    </form>
+
+    <p style="text-align:center; margin-top:18px; font-size:14px; color:#64748b;">
+    Already have an account?
+    <a href="/login" style="color:#4f46e5; font-weight:600; text-decoration:none;">
+        Login
+    </a>
+</p>
+
+</div>
+
+</body>
+</html>

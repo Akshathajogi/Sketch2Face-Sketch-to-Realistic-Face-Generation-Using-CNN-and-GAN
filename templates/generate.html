@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sketch to Face AI</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #eef2f7, #f9fbfd);
+            color: #1f2937;
+        }
+
+        /* ---------- Top Bar ---------- */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .topbar .actions a,
+        .topbar .actions button {
+            margin-left: 15px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .topbar .actions a.logout {
+            background: #ef4444;
+        }
+
+        /* ---------- Main Section ---------- */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            color: #6b7280;
+        }
+
+        /* ---------- Section Headings ---------- */
+        .section-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        /* ---------- Upload Section ---------- */
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 20px #b9c6fa;
+            transition: transform 0.3s ease;
+            border: 1px solid #e5e7eb;
+            /* light border */
+            color: #5c6673;
+            /* slightly gray text */
+            font-family: sans-serif;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+
+        }
+
+        /* ---------- Preview Box ---------- */
+        .preview-box {
+            width: 100%;
+            height: 320px;
+            border: 2px dashed #c7d2fe;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .preview-box img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+
+        /* ---------- Buttons ---------- */
+        .upload-btn {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 20px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .upload-btn input {
+            display: none;
+        }
+
+        .generate-btn {
+            margin-top: 30px;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .download-btn {
+            margin-top: 15px;
+            display: inline-block;
+            padding: 10px 16px;
+            background: #10b981;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        /* ---------- Modal Overlay ---------- */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(15, 23, 42, 0.75),
+                    rgba(15, 23, 42, 0.75));
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(6px);
+        }
+
+        /* ---------- Modal Card ---------- */
+        .modal-content {
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+            width: 850px;
+            max-height: 82vh;
+            padding: 32px 36px;
+            border-radius: 5px;
+            overflow-y: auto;
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.25),
+                0 10px 20px rgba(79, 70, 229, 0.15);
+            animation: modalFadeIn 0.4s ease;
+        }
+
+        /* ---------- Animation ---------- */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ---------- Headings ---------- */
+        .modal-content h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .modal-content h4 {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        /* ---------- Text ---------- */
+        .modal-content p {
+            line-height: 1.7;
+            color: #374151;
+            font-size: 15px;
+        }
+
+        /* ---------- Lists ---------- */
+        .modal-content ul,
+        .modal-content ol {
+            padding-left: 20px;
+        }
+
+        .modal-content li {
+            margin-bottom: 12px;
+        }
+
+        /* ---------- Highlight Cards ---------- */
+        .modal-content ul>li {
+            background: #eef2ff;
+            border-left: 4px solid #4f46e5;
+            padding: 14px 16px;
+            border-radius: 10px;
+            list-style: none;
+        }
+
+        /* ---------- Sticky Close Button ---------- */
+        .close-btn {
+            margin-top: 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 24px rgba(239, 68, 68, 0.4);
+        }
+
+        /* ---------- Custom Scrollbar ---------- */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(#6366f1, #4f46e5);
+            border-radius: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #e5e7eb;
+        }
+
+
+
+        /* ---------- Features ---------- */
+        .features-section {
+            margin-top: 70px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .feature-card svg {
+            width: 36px;
+            height: 36px;
+            stroke: #3b82f6;
+            fill: none;
+            stroke-width: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* ---------- Steps ---------- */
+        .steps-section {
+            margin-top: 90px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .step-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .step-number {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .step-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+
+        /* ---------- Icons ---------- */
+        .card svg {
+            width: 24px;
+            height: 24px;
+            fill: #4f46e5;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 900px) {
+
+            .features-grid,
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card:nth-child(4),
+            .feature-card:nth-child(5) {
+                grid-column: auto;
+            }
+        }
+
+        /* ---------- Chrome Style Close Button ---------- */
+
+        .modal-content {
+            position: relative;
+        }
+
+        .chrome-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            padding: 10px;
+            background: #ef4444;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .chrome-close:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .chrome-close:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ---------- Top Bar ---------- -->
+    <div class="topbar">
+        <h2>Sketch2Face </h2>
+        <div class="actions">
+            <button onclick="openModal()">About Project</button>
+            <a href="/logout" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- ---------- Main ---------- -->
+    <div class="container" data-has-output="{{ 'true' if output_img else 'false' }}">
+
+        <div class="title">
+            <h1>Sketch to Face Generation</h1>
+            <p>Upload a hand-drawn facial sketch and generate a realistic AI face in seconds.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="upload-section">
+
+                <!-- Input -->
+                <div class="card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                        </svg>
+                        Input Sketch
+                    </h3>
+                    <div class="preview-box">
+                        {% if input_img %}
+                        <img src="{{ url_for('static', filename='outputs/' + input_img) }}">
+                        {% else %}
+                        <img id="inputPreview" style="display:none;" />
+                        <span id="inputPlaceholder">Upload a sketch image</span>
+                        {% endif %}
+                    </div>
+
+
+
+                    <label class="upload-btn">
+                        Select Sketch
+                        <input type="file" name="sketch" accept="image/*" required onchange="previewInputImage(event)">
+                    </label>
+                </div>
+
+                <!-- Output -->
+                <div class="card">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                        </svg>
+                        Generated Face
+                    </h3>
+                    <div class="preview-box">
+                        {% if output_img %}
+                        <img src="{{ url_for('static', filename='outputs/' + output_img) }}">
+                        {% else %}
+                        <span>generated image will appear here</span>
+                        {% endif %}
+                    </div>
+
+                    {% if output_img %}
+                    <a class="download-btn" href="/download/{{ output_img }}">Download Image</a>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <button class="generate-btn" type="submit">Generate Face</button>
+        </form>
+
+        <section class="features-section">
+            <h2 class="section-title">Why Choose Sketch2Face?</h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2v20M2 12h20" />
+                    </svg>
+                    <h3>Sketch to Image</h3>
+                    <p>Convert hand-drawn sketches into realistic faces.</p>
+                </div>
+
+                <div class="feature-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+                        <path d="M9 12.75L11.25 15 15 9.75
+                 M21 12c0 1.268-.63 2.39-1.593 3.068
+                 a3.745 3.745 0 01-1.043 3.296
+                 a3.745 3.745 0 01-3.296 1.043
+                 A3.745 3.745 0 0112 21
+                 c-1.268 0-2.39-.63-3.068-1.593
+                 a3.746 3.746 0 01-3.296-1.043
+                 a3.745 3.745 0 01-1.043-3.296
+                 A3.745 3.745 0 013 12
+                 c0-1.268.63-2.39 1.593-3.068
+                 a3.745 3.745 0 011.043-3.296
+                 a3.746 3.746 0 013.296-1.043
+                 A3.746 3.746 0 0112 3
+                 c1.268 0 2.39.63 3.068 1.593
+                 a3.746 3.746 0 013.296 1.043
+                 a3.746 3.746 0 011.043 3.296
+                 A3.745 3.745 0 0121 12z" />
+                    </svg>
+
+                    <h3>Easy to Use</h3>
+                    <p>Clean interface designed for beginners and professionals.</p>
+                </div>
+
+
+                <div class="feature-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 2L3 14h7l-1 8 10-12h-7z" />
+                    </svg>
+                    <h3>Fast Processing</h3>
+                    <p>Optimized deep learning models for quick generation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <!-- Zig-zag upward trending line -->
+                        <path d="M3 18 L6 14 L10 16 L14 12 L18 14 L21 10" />
+                    </svg>
+                    <h3>Always Growing</h3>
+                    <p>We keep adding new features and improvements so you always get something better.</p>
+                </div>
+
+
+
+
+
+                <div class="feature-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    <h3>Real-Time Preview</h3>
+                    <p>Instantly view generated outputs with high clarity.</p>
+                </div>
+
+                <div class="feature-card">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    <h3>Free to Use</h3>
+                    <p>No subscriptions, no hidden charges.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="steps-section">
+            <h2 class="section-title">How to Turn a Sketch into a Face</h2>
+            <p class="section-subtitle">Three simple steps to generate a realistic face</p>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Upload Sketch</h3>
+                    <p>Select a hand-drawn facial sketch from your device.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Generate Face</h3>
+                    <p>Click generate and let the model process your sketch.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Download Result</h3>
+                    <p>Save the generated realistic face image.</p>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+    <!-- ---------- Modal ---------- -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <button class="chrome-close" onclick="closeModal()">
+                &times;
+            </button>
+            <h3>About Sketch2Face </h3>
+            <p>
+                Sketch2Face is a deep learning model designed to convert 2D facial sketches into realistic face
+                images.
+                It combines the strengths of Convolutional Neural Networks (CNNs) and Generative Adversarial Networks
+                (GANs)
+                to extract structural information from sketches and synthesize photorealistic images.
+            </p>
+
+            <h4>Model Architecture</h4>
+            <ul>
+                <li>
+                    <b>CNN Encoder:</b>
+                    <p>
+                        The CNN encoder processes the input sketch to extract meaningful structural features.
+                        It identifies facial contours, edges, and geometric patterns through multiple convolution and
+                        pooling layers.
+                        The encoder outputs a latent representation (feature vector) that summarizes the sketch’s
+                        structure.
+                    </p>
+                </li>
+                <li>
+                    <b>GAN Generator:</b>
+                    <p>
+                        The GAN generator takes the encoded features and produces a realistic face image.
+                        It is trained adversarially alongside a discriminator, which distinguishes real face images from
+                        generated ones.
+                        The generator learns to produce high-quality textures, skin tones, and details while preserving
+                        the input sketch structure.
+                    </p>
+                </li>
+                <li>
+                    <b>Discriminator:</b>
+                    <p>
+                        The discriminator is a CNN that evaluates whether an image is real or generated.
+                        It provides feedback to the generator, ensuring the output images look authentic and coherent
+                        with the sketch input.
+                    </p>
+                </li>
+                <li>
+                    <b>Training Workflow:</b>
+                    <ol>
+                        <li>The CNN encoder extracts features from a sketch.</li>
+                        <li>The GAN generator uses these features to create a realistic image.</li>
+                        <li>The discriminator compares the generated image to real images and computes a loss.</li>
+                        <li>The generator is updated to minimize this loss, improving realism and accuracy.</li>
+                        <li>This process repeats iteratively until the model generates high-quality faces.</li>
+                    </ol>
+                </li>
+            </ul>
+
+            <h4>Use Cases</h4>
+            <ul>
+                <li>Forensic sketch-to-photo reconstruction</li>
+                <li>Creative design and artistic rendering</li>
+                <li>Research in generative modeling</li>
+            </ul>
+
+        </div>
+    </div>
+
+
+    <script>
+        function openModal() {
+            document.getElementById("aboutModal").style.display = "flex";
+        }
+        function closeModal() {
+            document.getElementById("aboutModal").style.display = "none";
+        }
+
+        function previewInputImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.getElementById("inputPreview");
+                const text = document.getElementById("inputPlaceholder");
+
+                img.src = e.target.result;
+                img.style.display = "block";
+                text.style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+
+
+</body>
+
+</html>

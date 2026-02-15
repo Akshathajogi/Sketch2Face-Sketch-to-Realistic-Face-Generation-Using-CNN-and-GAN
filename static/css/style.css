@@ -1,0 +1,25 @@
+body { font-family: 'Segoe UI'; background:#f4f6fb; margin:0; }
+header {
+  background:#111;
+  color:white;
+  padding:15px 40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+header a { color:white; margin-left:15px; text-decoration:none; }
+.btn {
+  background:#6c63ff;
+  padding:8px 16px;
+  border-radius:20px;
+}
+
+.hero { text-align:center; padding:60px; }
+.example { display:flex; justify-content:center; gap:20px; margin-top:30px; }
+.example img { width:200px; border-radius:12px; }
+
+.container { padding:40px; text-align:center; }
+.result { display:flex; justify-content:center; gap:50px; margin-top:40px; }
+.result img { width:300px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.2); }
+
+input[type=range] { width:100%; margin-top:15px; }
