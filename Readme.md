@@ -6,6 +6,7 @@ Sketch2Face is a deep learning project that converts hand-drawn facial sketches 
 The model learns to translate sketch domain images into photorealistic face images through adversarial training.
 
 
+
 ## 🚀 Features
 - Sketch to Realistic Face Conversion
 - GAN-based Image Translation
@@ -13,6 +14,7 @@ The model learns to translate sketch domain images into photorealistic face imag
 - Checkpoint Saving
 - Image Generation during Training
 - Web Interface using Flask
+
 
 
 ## 🧠 Tech Stack
@@ -25,15 +27,18 @@ The model learns to translate sketch domain images into photorealistic face imag
 - HTML/CSS/JavaScript
 
 
+
 ## ⚙️ Installation
 
-1. Clone the repository:
+Clone the repository:
 
 git clone https://github.com/your-username/Sketch2Face.git
 
 
+
 ## 🏋️ Training
 Checkpoints will be saved in the `checkpoints/` directory.
+
 
 
 ## 📊 Results
