@@ -26,3 +26,29 @@ The model learns to translate sketch domain images into photorealistic face imag
 
 
 ## 📂 Project Structure
+Sketch2Face/
+│
+├── models/
+├── train.py
+├── inference.py
+├── utils.py
+├── app.py
+├── static/
+├── templates/
+├── requirements.txt
+└── README.md
+
+
+## ⚙️ Installation
+
+1. Clone the repository:
+
+git clone https://github.com/your-username/Sketch2Face.git
+
+
+## 🏋️ Training
+Checkpoints will be saved in the `checkpoints/` directory.
+
+
+## 📊 Results
+The model generates realistic facial images from input sketches using adversarial training between generator and discriminator networks.
